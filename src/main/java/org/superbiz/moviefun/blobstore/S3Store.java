@@ -28,10 +28,6 @@ public class S3Store implements BlobStore {
     @Override
     public Optional<Blob> get(String name) throws IOException {
 
-        System.out.println("#######################################");
-        System.out.println("S3 URL : " + s3Client.getUrl(photoStorageBucket, name));
-        System.out.println("#######################################");
-
         if(s3Client.doesObjectExist(photoStorageBucket, name)) {
             S3Object object = s3Client.getObject(photoStorageBucket, name);
             InputStream is = object.getObjectContent();
