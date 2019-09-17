@@ -1,0 +1,49 @@
+package org.superbiz.moviefun.blobstore;
+
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
+
+public class S3Store implements BlobStore {
+
+    private AmazonS3Client s3Client;
+    private String photoStorageBucket;
+
+    public S3Store(AmazonS3Client s3Client, String photoStorageBucket) {
+        this.s3Client = s3Client;
+        this.photoStorageBucket = photoStorageBucket;
+    }
+
+    @Override
+    public void put(Blob blob) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(blob.contentType);
+        s3Client.putObject(photoStorageBucket, blob.name, blob.inputStream, metadata);
+    }
+
+    @Override
+    public Optional<Blob> get(String name) throws IOException {
+
+        System.out.println("#######################################");
+        System.out.println("S3 URL : " + s3Client.getUrl(photoStorageBucket, name));
+        System.out.println("#######################################");
+
+        if(s3Client.doesObjectExist(photoStorageBucket, name)) {
+            S3Object object = s3Client.getObject(photoStorageBucket, name);
+            InputStream is = object.getObjectContent();
+            String contentType = object.getObjectMetadata().getContentType();
+            Blob blob = new Blob(name, is, contentType);
+            return Optional.of(blob);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+}
