@@ -9,3 +9,15 @@ spring:
   mvc.view:
     prefix: /WEB-INF/
     suffix: .jsp
+logging.level:
+  root: INFO
+  org.superbiz.moviefun: DEBUG
+management:
+  endpoint:
+    loggers:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
