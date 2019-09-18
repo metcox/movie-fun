@@ -60,16 +60,6 @@ public class AlbumsController {
         return new HttpEntity<>(imageBytes, headers);
     }
 
-    private void saveUploadToFile(@RequestParam("file") MultipartFile uploadedFile, File targetFile) throws IOException {
-        targetFile.delete();
-        targetFile.getParentFile().mkdirs();
-        targetFile.createNewFile();
-
-        try (FileOutputStream outputStream = new FileOutputStream(targetFile)) {
-            outputStream.write(uploadedFile.getBytes());
-        }
-    }
-
     private void saveUploadToBlob(long albumId, @RequestParam("file") MultipartFile uploadedFile) throws IOException {
         blobStore.put(new Blob(getCoverName(albumId), uploadedFile.getInputStream(), uploadedFile.getContentType()));
     }
